@@ -1,3 +1,5 @@
+import os
+
 from flask import Flask
 from flask_restful import Resource, Api
 from flask_jwt import JWT
@@ -12,7 +14,7 @@ from db import db
 app = Flask(__name__)
 app.config['PROPAGATE_EXCEPTIONS'] = True
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"]=False # turn off Flask_SQLAlchemy modfication tracker because SQL_Alchemy already has one
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///data.db" # it doesn't have to sqlite. It can be MySQL, PostgreSQL, Oracle, anything.
+app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get('DATABASE_URL', "sqlite:///data.db") # we can still use sqlite locally if the environment variable for Postgres is not found
 db.init_app(app)
 
 app.secret_key = 'jawad'
