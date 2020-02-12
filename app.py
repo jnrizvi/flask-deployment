@@ -1,7 +1,7 @@
 import os
 
 from flask import Flask
-from flask_restful import Resource, Api
+from flask_restful import Resource, Api, reqparse
 from flask_jwt import JWT
 
 from security import authenticate, identity
@@ -10,6 +10,8 @@ from resources.item import Item, ItemList
 from resources.store import Store, StoreList
 
 from db import db
+import random
+
 
 app = Flask(__name__)
 app.config['PROPAGATE_EXCEPTIONS'] = True
@@ -42,6 +44,41 @@ api.add_resource(UserRegister, '/register')
 # stores table
 api.add_resource(Store, '/store/<string:name>')
 api.add_resource(StoreList, '/stores')
+
+
+
+# in-memory database
+notfications = []
+
+# every resource you create has to be a class
+class Notification(Resource):
+    parser = reqparse.RequestParser()
+    # make sure the description argument is there
+    parser.add_argument('description',
+        type=str
+    )
+
+    def post(self):
+        # clear errors first before loading data
+        # if next(filter(lambda x: x['id'] == id, notfications), None) is not None:
+        #     return {'message': "An notification with id '{}' already exists.".format(id)}, 400 # bad request
+        
+        # save the request data payload into the variable 'data' 
+        data = Notification.parser.parse_args()
+        # print(data)
+        id = random.getrandbits(128)
+        
+        notification = {'id': id, 'description': data['description']}
+        notfications.append(notification)
+        return notification, 201
+
+class NotificationList(Resource):
+    def get(self):
+        return {'notifications': notfications}
+
+
+api.add_resource(Notification, '/newnotification')
+api.add_resource(NotificationList, '/notifications')
 
 # avoid running the app on importing app. Only the file you run is __main__
 if __name__ == '__main__':
