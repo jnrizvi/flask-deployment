@@ -53,25 +53,20 @@ notfications = []
 # every resource you create has to be a class
 class Notification(Resource):
     parser = reqparse.RequestParser()
-    # make sure the description argument is there
     parser.add_argument('description',
         type=str
     )
 
-    def post(self):
-        # clear errors first before loading data
-        # if next(filter(lambda x: x['id'] == id, notfications), None) is not None:
-        #     return {'message': "An notification with id '{}' already exists.".format(id)}, 400 # bad request
-        
-        # save the request data payload into the variable 'data' 
+    def post(self):        
+        # save the request data payload into a variable
         request_data = request.get_json()
-        print(request_data)
-        data = Notification.parser.parse_args()
-        
+        # print(request_data)
+
+        # data = Notification.parser.parse_args()
         id = random.getrandbits(128)
         
-        # notification = {'id': id, 'description': data['description']}
         notification = {
+          'id': id,
           'manage_url': request_data['manage_url'],
           'memo': request_data['memo'],
           'src_ip': request_data['additional_data']['src_ip'],
@@ -81,7 +76,7 @@ class Notification(Resource):
           'channel': request_data['channel'],
           'time': request_data['time']
         }
-        
+
         notfications.append(notification)
         return notification, 201
 
