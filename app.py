@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask
+from flask import Flask, request
 from flask_restful import Resource, Api, reqparse
 from flask_jwt import JWT
 
@@ -64,8 +64,10 @@ class Notification(Resource):
         #     return {'message': "An notification with id '{}' already exists.".format(id)}, 400 # bad request
         
         # save the request data payload into the variable 'data' 
+        request_data = request.get_json()
+        print(request_data)
         data = Notification.parser.parse_args()
-        print(data)
+        
         id = random.getrandbits(128)
         
         notification = {'id': id, 'description': data['description']}
