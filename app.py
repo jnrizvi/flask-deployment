@@ -3,7 +3,7 @@ import os
 from flask import Flask, request
 from flask_restful import Resource, Api, reqparse
 from flask_jwt import JWT
-from flask_cors import CORS, cross_origin
+from flask_cors import CORS
 
 from security import authenticate, identity
 from resources.user import UserRegister
@@ -20,8 +20,7 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"]=False # turn off Flask_SQLAlchemy m
 app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get('DATABASE_URL', "sqlite:///data.db") # we can still use sqlite locally if the environment variable for Postgres is not found
 db.init_app(app)
 
-cors = CORS(app)
-app.config['CORS_HEADERS'] = 'Content-Type'
+CORS(app)
 
 app.secret_key = 'jawad'
 api = Api(app) # allow us to easily add resources
@@ -55,7 +54,6 @@ api.add_resource(StoreList, '/stores')
 notfications = []
 
 # every resource you create has to be a class
-@cross_origin()
 class Notification(Resource):
     parser = reqparse.RequestParser()
     parser.add_argument('description',
@@ -85,7 +83,6 @@ class Notification(Resource):
         notfications.append(notification)
         return notification, 201
 
-@cross_origin()
 class NotificationList(Resource):
     def get(self):
         return {'notifications': notfications}
