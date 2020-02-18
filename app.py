@@ -70,7 +70,18 @@ class Notification(Resource):
         
         id = random.getrandbits(128)
         
-        notification = {'id': id, 'description': data['description']}
+        # notification = {'id': id, 'description': data['description']}
+        notification = {
+          'manage_url': request_data['manage_url'],
+          'memo': request_data['memo'],
+          'src_ip': request_data['additional_data']['src_ip'],
+          'useragent': request_data['additional_data']['useragent'],
+          'referer': request_data['additional_data']['referer'],
+          'location': request_data['additional_data']['location'],
+          'channel': request_data['channel'],
+          'time': request_data['time']
+        }
+        
         notfications.append(notification)
         return notification, 201
 
