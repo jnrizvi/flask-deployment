@@ -65,7 +65,7 @@ class Notification(Resource):
         
         # save the request data payload into the variable 'data' 
         data = Notification.parser.parse_args()
-        # print(data)
+        print(data)
         id = random.getrandbits(128)
         
         notification = {'id': id, 'description': data['description']}
